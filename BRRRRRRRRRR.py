@@ -1,0 +1,1 @@
+print("BRRRRRRRRRRR"*6)
