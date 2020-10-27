@@ -1,1 +1,0 @@
-print("BRRRRRRRRRRR"*6)
