@@ -7,9 +7,6 @@ import numpy as np
 import pygame
 
 
-#Imagenes del emulador
-imagen1 = np.array(Image.open('imagenprueba.jpg'))
-imagen2 = np.array(Image.open('imagenprueba.jpg'))
 
 
 
@@ -50,8 +47,28 @@ textRect1.center = (350 , 50)
 textRect2.center = (1200 , 50)
 
 
+#Imagenes del emulador
+imagen1 = np.array(Image.open('imagenprueba.jpg'))
+imagen2 = np.array(Image.open('imagenprueba.jpg'))
+
+sonar = pygame.transform.scale(pygame.image.load("sonar.png"),(75,40))
+centro = sonar.get_rect()
+centro.center = (1190,310)
+
 
 # movimiento del radar
+
+def rotarSonar(imagen,angulo,x,y):
+    imagenRotada = pygame.transform.rotozoom(imagen,angulo,1)
+    rectRotada = imagenRotada.get_rect(center = (x,y))
+    return imagenRotada,rectRotada
+
+
+
+xSonar = 1190
+ySonar = 310
+
+
 x1 = 240
 y1 = 240
 
@@ -62,27 +79,32 @@ width = 20
 height = 20
 
 
-
-vel = 10
+angulo = 0
 
 while not done:
+        clock.tick(30)
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     done = True
                 if event.type == pygame.MOUSEBUTTONUP:
-                    x1, y1 = pygame.mouse.get_pos()
-                    print("primero: ",x1, y1)
-                    if(x1>950):
-                        x1-=950
-                    elif(x1<950):
-                        x1 = 950 - x1
-
-                    y1-=100
-                    x2=x1+10
-                    y2=y1-5
-                    print(x1, y1)
-
-
+                    xSonar, ySonar = pygame.mouse.get_pos()
+                    # print("primero: ",xSonar, ySonar)
+                    # if(xSonar>950):
+                    #     xSonar-=950
+                    # elif(xSonar<950):
+                    #     xSonar = 950 - xSonar
+                    #
+                    # ySonar-=100
+                    # x2=xSonar+10
+                    # y2=ySonar-5
+                    # print(xSonar, ySonar)
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_LEFT:
+                        angulo += 10
+                    if event.key == pygame.K_RIGHT:
+                        angulo -= 10
+                if event.type == pygame.KEYUP:
+                    angulo = angulo
 
         screen.fill((255, 255, 255))
         screen.blit(texto1,textRect1)
@@ -95,14 +117,14 @@ while not done:
         surface1 = pygame.surfarray.make_surface(imagen1)
         screen.blit(surface1, (100, 100))
 
-
         surface2 = pygame.surfarray.make_surface(imagen2)
-
-        # X  Y W H
-        pygame.draw.rect(surface2, (255, 0, 0), (x1, y1, 80, 5))
-        pygame.draw.rect(surface2, (255, 255, 255), (x2, y2, 60, 5))
-
         screen.blit(surface2, (950, 100))
+
+
+        #rotacion del sonar
+
+        sonarRotado,rotadoRect = rotarSonar(sonar,angulo,xSonar,ySonar)
+        screen.blit(sonarRotado,rotadoRect)
 
         pygame.display.flip()
         pygame.display.update()
