@@ -34,7 +34,7 @@ font = pygame.font.Font('freesansbold.ttf', 21)
 
 # create a text suface object,
 # on which text is drawn on it.
-texto1 = font.render('Imagen a escanear', True, black)
+texto1 = font.render('Imagen original', True, black)
 texto2 = font.render('Imagen en proceso', True, black)
 
 # create a rectangular object for the
@@ -97,23 +97,23 @@ while not done:
                     # ySonar-=100
                     # x2=xSonar+10
                     # y2=ySonar-5
-                    # print(xSonar, ySonar)
+                    print(xSonar, ySonar)
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_LEFT:
                         angulo += 10
                     if event.key == pygame.K_RIGHT:
                         angulo -= 10
+                    if event.key == pygame.K_SPACE:
+                        modificarPixeles()
                 if event.type == pygame.KEYUP:
                     angulo = angulo
 
-        screen.fill((255, 255, 255))
+        screen.fill((150, 150, 150))
         screen.blit(texto1,textRect1)
         screen.blit(texto2,textRect2)
-
-        modificarPixeles()
+        # modificarPixeles()
         imagen1
         imagen2
-        # Convert to a surface and splat onto screen offset by border width and height
         surface1 = pygame.surfarray.make_surface(imagen1)
         screen.blit(surface1, (100, 100))
 
@@ -122,7 +122,6 @@ while not done:
 
 
         #rotacion del sonar
-
         sonarRotado,rotadoRect = rotarSonar(sonar,angulo,xSonar,ySonar)
         screen.blit(sonarRotado,rotadoRect)
 
