@@ -15,6 +15,8 @@ def modificarPixeles():
         for j in range(500):
             if not(np.array_equiv(imagen2[i,j],0)):
                 imagen2[i,j] = 88
+            if i < 100 and j < 100:
+                imagen2[i, j] = 152
 
 
 
@@ -48,8 +50,8 @@ textRect2.center = (1200 , 50)
 
 
 #Imagenes del emulador
-imagen1 = np.array(Image.open('imagenprueba.jpg'))
-imagen2 = np.array(Image.open('imagenprueba.jpg'))
+imagen1 = np.array(Image.open('imagen.jpg'))
+imagen2 = np.array(Image.open('imagen.jpg'))
 
 sonar = pygame.transform.scale(pygame.image.load("sonar.png"),(75,40))
 centro = sonar.get_rect()
@@ -108,6 +110,9 @@ while not done:
                 if event.type == pygame.KEYUP:
                     angulo = angulo
 
+
+        if angulo == -360 or angulo == 360:
+            angulo = 0
         screen.fill((150, 150, 150))
         screen.blit(texto1,textRect1)
         screen.blit(texto2,textRect2)
@@ -124,7 +129,7 @@ while not done:
         #rotacion del sonar
         sonarRotado,rotadoRect = rotarSonar(sonar,angulo,xSonar,ySonar)
         screen.blit(sonarRotado,rotadoRect)
-
+        print("angulo: ", angulo)
         pygame.display.flip()
         pygame.display.update()
 
