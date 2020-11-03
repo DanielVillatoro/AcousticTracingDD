@@ -7,21 +7,81 @@ import numpy as np
 import pygame
 
 
+#Imagenes del emulador
+imagen1 = np.array(Image.open('imagen.jpg'))
+imagen2 = np.array(Image.open('imagen.jpg'))
+imagenLogica = np.array(Image.open('imagen.jpg'))
 
+
+
+
+def calcularXY(x,y):
+    if (x > 950):
+        x -= 950
+    elif (x < 950):
+        x = 950 - x
+    y -= 100
+    print("Pos sonar:", x, y)
+    return (x,y)
+
+
+def calcularRayo(x,y,angulo):
+    x,y = calcularXY(x,y)
+    if angulo == 0:
+        enviarRayo(x,y,0,1)
+    elif angulo == 10:
+        enviarRayo(x, y, 1, 2)
+    elif angulo == -10:
+        enviarRayo(x, y, -1, 2)
+    elif angulo == 20:
+        enviarRayo(x, y, 2, 2)
+    elif angulo == -20:
+        enviarRayo(x, y, -2, 2)
+    elif angulo == 30:
+        enviarRayo(x, y, 3, 3)
+    elif angulo == -30:
+        enviarRayo(x, y, -3, 3)
+    elif angulo == 40:
+        enviarRayo(x, y, 4, 3)
+    elif angulo == -40:
+        enviarRayo(x, y, -4, 3)
+    elif angulo == 50:
+        enviarRayo(x, y, 5, 4)
+    elif angulo == -50:
+        enviarRayo(x, y, -5, 4)
+
+
+def enviarRayo(x,y,contx,conty):
+    if x >= 500 or y >= 500 or x < 0 or y < 0:
+        return True
+    else:
+        if not(np.array_equiv(imagenLogica[x,y],0)):
+            imagen2[x][y] = 150
+            print("Pos pixel encontrado: ",x,y)
+            return True
+        else:
+            return enviarRayo(x-contx,y-conty,contx,conty)
 
 
 def modificarPixeles():
     for i in range(500):
         for j in range(500):
-            if not(np.array_equiv(imagen2[i,j],0)):
-                imagen2[i,j] = 88
-            if i < 100 and j < 100:
-                imagen2[i, j] = 152
+            imagen2[i, j] = 0
+            # if not(np.array_equiv(imagen2[i,j],0)):
+            #     imagen2[i,j] = 88
+            # if i < 100 and j < 100:
+            #     imagen2[i, j] = 152
+
+
+def rotarSonar(imagen,angulo,x,y):
+    imagenRotada = pygame.transform.rotozoom(imagen,angulo,1)
+    rectRotada = imagenRotada.get_rect(center = (x,y))
+    return imagenRotada,rectRotada
 
 
 
 
-# --------------------------------------- UI ------------------------------------------------U
+# --------------------------------------- GUI ------------------------------------------------U
 h,w=1500,800
 border=50
 pygame.init()
@@ -49,9 +109,6 @@ textRect1.center = (350 , 50)
 textRect2.center = (1200 , 50)
 
 
-#Imagenes del emulador
-imagen1 = np.array(Image.open('imagen.jpg'))
-imagen2 = np.array(Image.open('imagen.jpg'))
 
 sonar = pygame.transform.scale(pygame.image.load("sonar.png"),(75,40))
 centro = sonar.get_rect()
@@ -59,12 +116,6 @@ centro.center = (1190,310)
 
 
 # movimiento del radar
-
-def rotarSonar(imagen,angulo,x,y):
-    imagenRotada = pygame.transform.rotozoom(imagen,angulo,1)
-    rectRotada = imagenRotada.get_rect(center = (x,y))
-    return imagenRotada,rectRotada
-
 
 
 xSonar = 1190
@@ -83,6 +134,8 @@ height = 20
 
 angulo = 0
 
+modificarPixeles()
+
 while not done:
         clock.tick(30)
         for event in pygame.event.get():
@@ -90,23 +143,15 @@ while not done:
                     done = True
                 if event.type == pygame.MOUSEBUTTONUP:
                     xSonar, ySonar = pygame.mouse.get_pos()
-                    # print("primero: ",xSonar, ySonar)
-                    # if(xSonar>950):
-                    #     xSonar-=950
-                    # elif(xSonar<950):
-                    #     xSonar = 950 - xSonar
-                    #
-                    # ySonar-=100
-                    # x2=xSonar+10
-                    # y2=ySonar-5
-                    print(xSonar, ySonar)
+                    print("Pos global: ",xSonar, ySonar)
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_LEFT:
                         angulo += 10
                     if event.key == pygame.K_RIGHT:
                         angulo -= 10
                     if event.key == pygame.K_SPACE:
-                        modificarPixeles()
+                        # modificarPixeles()
+                        calcularRayo(xSonar,ySonar,angulo)
                 if event.type == pygame.KEYUP:
                     angulo = angulo
 
@@ -116,7 +161,6 @@ while not done:
         screen.fill((150, 150, 150))
         screen.blit(texto1,textRect1)
         screen.blit(texto2,textRect2)
-        # modificarPixeles()
         imagen1
         imagen2
         surface1 = pygame.surfarray.make_surface(imagen1)
@@ -125,15 +169,11 @@ while not done:
         surface2 = pygame.surfarray.make_surface(imagen2)
         screen.blit(surface2, (950, 100))
 
-
         #rotacion del sonar
         sonarRotado,rotadoRect = rotarSonar(sonar,angulo,xSonar,ySonar)
         screen.blit(sonarRotado,rotadoRect)
-        print("angulo: ", angulo)
         pygame.display.flip()
         pygame.display.update()
-
-
 
 
 
