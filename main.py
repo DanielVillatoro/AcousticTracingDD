@@ -12,7 +12,11 @@ imagen1 = np.array(Image.open('imagen.jpg'))
 imagen2 = np.array(Image.open('imagen.jpg'))
 imagenLogica = np.array(Image.open('imagen.jpg'))
 
+rangoCono = 40
 
+
+
+# def enviarRayosCono():
 
 
 def calcularXY(x,y):
@@ -49,6 +53,58 @@ def calcularRayo(x,y,angulo):
         enviarRayo(x, y, 5, 4)
     elif angulo == -50:
         enviarRayo(x, y, -5, 4)
+    elif angulo == 60:
+        enviarRayo(x, y, 6, 4)
+    elif angulo == -60:
+        enviarRayo(x, y, -6, 4)
+    elif angulo == 70:
+        enviarRayo(x, y, 7, 5)
+    elif angulo == -70:
+        enviarRayo(x, y, -7, 5)
+    elif angulo == 80:
+        enviarRayo(x, y, 8, 5)
+    elif angulo == -80:
+        enviarRayo(x, y, -8, 5)
+    elif angulo == 90:
+        enviarRayo(x, y, 1, 0)
+    elif angulo == -90:
+        enviarRayo(x, y, -1, 0)
+    elif angulo == 100:
+        enviarRayo(x, y, 2, -1)
+    elif angulo == -100:
+        enviarRayo(x, y, -2, -1)
+    elif angulo == 110:
+        enviarRayo(x, y, 2, -2)
+    elif angulo == -110:
+        enviarRayo(x, y, -2, -2)
+    elif angulo == 120:
+        enviarRayo(x, y, 2, -3)
+    elif angulo == -120:
+        enviarRayo(x, y, -2, -3)
+    elif angulo == 130:
+        enviarRayo(x, y, 2, -4)
+    elif angulo == -130:
+        enviarRayo(x, y, -2, -4)
+    elif angulo == 140:
+        enviarRayo(x, y, 2, -4)
+    elif angulo == -140:
+        enviarRayo(x, y, -2, -4)
+    elif angulo == 150:
+        enviarRayo(x, y, 2, -5)
+    elif angulo == -150:
+        enviarRayo(x, y, -2, -5)
+    elif angulo == 160:
+        enviarRayo(x, y, 3, -6)
+    elif angulo == -160:
+        enviarRayo(x, y, -3, -6)
+    elif angulo == 170:
+        enviarRayo(x, y, 3, -7)
+    elif angulo == -170:
+        enviarRayo(x, y, -3, -7)
+    elif angulo == 180:
+        enviarRayo(x, y, 3, -8)
+    elif angulo == -180:
+        enviarRayo(x, y, -3, -8)
 
 
 def enviarRayo(x,y,contx,conty):
@@ -154,6 +210,8 @@ while not done:
                         calcularRayo(xSonar,ySonar,angulo)
                 if event.type == pygame.KEYUP:
                     angulo = angulo
+                print("Angulo: ", angulo)
+
 
 
         if angulo == -360 or angulo == 360:
@@ -163,6 +221,7 @@ while not done:
         screen.blit(texto2,textRect2)
         imagen1
         imagen2
+
         surface1 = pygame.surfarray.make_surface(imagen1)
         screen.blit(surface1, (100, 100))
 
