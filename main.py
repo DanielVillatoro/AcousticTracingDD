@@ -3,20 +3,21 @@
 # Daniel Villatoro Cantarero
 
 from PIL import Image
+from numpy import random
 import numpy as np
 import pygame
-
 
 #Imagenes del emulador
 imagen1 = np.array(Image.open('imagen.jpg'))
 imagen2 = np.array(Image.open('imagen.jpg'))
 imagenLogica = np.array(Image.open('imagen.jpg'))
 
-rangoCono = 40
+rangoRayos = 15
+cantidadRayos = 1500
 
 
 
-# def enviarRayosCono():
+# def enviarRayos():
 
 
 
@@ -29,7 +30,6 @@ def guardarAreaSonar(x,y):
     if (y < rangoX):
         y = 0
     area = []
-    print(area)
     while(rangoY != 0):
         area += [(x,y)]
         rangoX-=1
@@ -38,9 +38,8 @@ def guardarAreaSonar(x,y):
             rangoX = 30
             rangoY -= 1
             y += 1
+        # imagen2[x,y] = 150
     print("area sonar: ",area)
-
-
 
 def calcularXY(x,y):
     if (x > 950):
@@ -48,99 +47,55 @@ def calcularXY(x,y):
     elif (x < 950):
         x = 950 - x
     y -= 100
-    print("Pos sonar:", x, y)
+    # print("Pos sonar:", x, y)
     return (x,y)
 
 
 def calcularRayo(x,y,angulo):
     x,y = calcularXY(x,y)
-    guardarAreaSonar(x,y)
+    contX = 0 #rango de recorrido x
+    contY = 0 #rango de recorrido y
     if angulo == 0:
-        enviarRayo(x,y,0,1)
-    elif angulo == 10:
-        enviarRayo(x, y, 1, 2)
-    elif angulo == 350:
-        enviarRayo(x, y, -1, 2)
-    elif angulo == 20:
-        enviarRayo(x, y, 2, 2)
-    elif angulo == 340:
-        enviarRayo(x, y, -2, 2)
-    elif angulo == 30:
-        enviarRayo(x, y, 3, 3)
-    elif angulo == 330:
-        enviarRayo(x, y, -3, 3)
-    elif angulo == 40:
-        enviarRayo(x, y, 4, 3)
-    elif angulo == 320:
-        enviarRayo(x, y, -4, 3)
-    elif angulo == 50:
-        enviarRayo(x, y, 5, 4)
-    elif angulo == 310:
-        enviarRayo(x, y, -5, 4)
-    elif angulo == 60:
-        enviarRayo(x, y, 6, 4)
-    elif angulo == 300:
-        enviarRayo(x, y, -6, 4)
-    elif angulo == 70:
-        enviarRayo(x, y, 7, 5)
-    elif angulo == 290:
-        enviarRayo(x, y, -7, 5)
-    elif angulo == 80:
-        enviarRayo(x, y, 8, 5)
-    elif angulo == 280:
-        enviarRayo(x, y, -8, 5)
-    elif angulo == 90:
-        enviarRayo(x, y, 1, 0)
-    elif angulo == 270:
-        enviarRayo(x, y, -1, 0)
-    elif angulo == 100:
-        enviarRayo(x, y, 2, -1)
-    elif angulo == 260:
-        enviarRayo(x, y, -2, -1)
-    elif angulo == 110:
-        enviarRayo(x, y, 2, -2)
-    elif angulo == 250:
-        enviarRayo(x, y, -2, -2)
-    elif angulo == 120:
-        enviarRayo(x, y, 2, -3)
-    elif angulo == 240:
-        enviarRayo(x, y, -2, -3)
-    elif angulo == 130:
-        enviarRayo(x, y, 2, -4)
-    elif angulo == 230:
-        enviarRayo(x, y, -2, -4)
-    elif angulo == 140:
-        enviarRayo(x, y, 2, -4)
-    elif angulo == 220:
-        enviarRayo(x, y, -2, -4)
-    elif angulo == 150:
-        enviarRayo(x, y, 2, -5)
-    elif angulo == 210:
-        enviarRayo(x, y, -2, -5)
-    elif angulo == 160:
-        enviarRayo(x, y, 3, -6)
-    elif angulo == 200:
-        enviarRayo(x, y, -3, -6)
-    elif angulo == 170:
-        enviarRayo(x, y, 3, -7)
-    elif angulo == 190:
-        enviarRayo(x, y, -3, -7)
-    elif angulo == 180:
-        enviarRayo(x, y, 0, -1)
-    # elif angulo == -180:
-    #     enviarRayo(x, y, -3, -8)
+        for i in range(0,cantidadRayos):
+            contX = random.randint(1, rangoRayos)
+            contY = random.randint(1, rangoRayos)
+            enviarRayo(x, y, contX, contY, contX)
+            enviarRayo(x, y, -contX, contY, contX)
+            # for i in range(0,cantidadRayos//2):
+
+    elif angulo == 90 or angulo == -270:
+        for i in range(0, cantidadRayos):
+            contX = random.randint(1, rangoRayos)
+            contY = random.randint(1, rangoRayos)
+            enviarRayo(x, y, contX, contY, contY)
+            enviarRayo(x, y, contX, -contY, contY)
+    elif angulo == -90 or angulo == 270:
+        for i in range(0, cantidadRayos):
+            contX = random.randint(1, rangoRayos)
+            contY = random.randint(1, rangoRayos)
+            enviarRayo(x, y, -contX, contY, contY)
+            enviarRayo(x, y, -contX, -contY, contY)
+    elif angulo == 180 or angulo == -180:
+        for i in range(0, cantidadRayos):
+            contX = random.randint(1, rangoRayos)
+            contY = random.randint(1, rangoRayos)
+            enviarRayo(x, y, contX, -contY, contX)
+            enviarRayo(x, y, -contX, -contY, contX)
 
 
-def enviarRayo(x,y,contx,conty):
+
+def enviarRayo(x,y,contx,conty,rango):
     if x >= 500 or y >= 500 or x < 0 or y < 0:
+        return True
+    if rango > rangoRayos:
         return True
     else:
         if not(np.array_equiv(imagenLogica[x,y],0)):
             imagen2[x][y] = 150
-            print("Pos pixel encontrado: ",x,y)
+            # print("Pos pixel encontrado: ",x,y)
             return True
         else:
-            return enviarRayo(x-contx,y-conty,contx,conty)
+            return enviarRayo(x-contx,y-conty,contx,conty,rango+1)
 
 
 def modificarPixeles():
@@ -223,12 +178,12 @@ while not done:
                     done = True
                 if event.type == pygame.MOUSEBUTTONUP:
                     xSonar, ySonar = pygame.mouse.get_pos()
-                    print("Pos global: ",xSonar, ySonar)
+                    # print("Pos global: ",xSonar, ySonar)
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_LEFT:
-                        angulo += 10
+                        angulo += 90
                     if event.key == pygame.K_RIGHT:
-                        angulo -= 10
+                        angulo -= 90
                     if event.key == pygame.K_SPACE:
                         # modificarPixeles()
                         calcularRayo(xSonar,ySonar,angulo)
@@ -237,14 +192,8 @@ while not done:
                 # print("Angulo: ", angulo)
 
 
-        if angulo == -10:
-            angulo = 350
-
-        if angulo == 360:
+        if angulo == -360 or angulo == 360:
             angulo = 0
-
-        # if angulo == -360 or angulo == 360:
-        #     angulo = 0
         screen.fill((150, 150, 150))
         screen.blit(texto1,textRect1)
         screen.blit(texto2,textRect2)
