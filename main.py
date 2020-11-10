@@ -6,6 +6,7 @@ from PIL import Image
 from numpy import random
 import numpy as np
 import pygame
+import math
 
 #Imagenes del emulador
 imagen1 = np.array(Image.open('imagen.jpg'))
@@ -91,11 +92,23 @@ def enviarRayo(x,y,contx,conty,rango):
         return True
     else:
         if not(np.array_equiv(imagenLogica[x,y],0)):
-            imagen2[x][y] = 150
+            # imagen2[x][y] = 150
+            imagen2[x][y] = calcularEnergía(x,y)
             # print("Pos pixel encontrado: ",x,y)
             return True
         else:
             return enviarRayo(x-contx,y-conty,contx,conty,rango+1)
+
+
+def calcularEnergía(x2,y2):
+    x1 = abs(xSonar-950)
+    y1 = abs(ySonar-100)
+    energia = 255
+    distancia = math.sqrt((abs(x1-x2))**2+(abs(y1-y2))**2)
+    energia =  energia - distancia
+    print("Energia:" , energia)
+    return energia
+
 
 
 def modificarPixeles():
