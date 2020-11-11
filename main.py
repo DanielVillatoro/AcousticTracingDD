@@ -7,6 +7,7 @@ from numpy import random
 import numpy as np
 import pygame
 import math
+import threading
 
 #Imagenes del emulador
 imagen1 = np.array(Image.open('imagen.jpg'))
@@ -14,11 +15,12 @@ imagen2 = np.array(Image.open('imagen.jpg'))
 imagenLogica = np.array(Image.open('imagen.jpg'))
 
 rangoRayos = 15
-cantidadRayos = 1500
+cantidadRayos = 300
+
+rangoRayosSecundario = 5
+cantidadRayosSecundarios = 50
 
 
-
-# def enviarRayos():
 
 
 
@@ -43,13 +45,11 @@ def guardarAreaSonar(x,y):
     print("area sonar: ",area)
 
 def calcularXY(x,y):
-    if (x > 950):
-        x -= 950
-    elif (x < 950):
-        x = 950 - x
-    y -= 100
-    # print("Pos sonar:", x, y)
+    x = abs(xSonar - 950)
+    y = abs(ySonar - 100)
     return (x,y)
+
+
 
 
 def calcularRayo(x,y,angulo):
@@ -60,53 +60,94 @@ def calcularRayo(x,y,angulo):
         for i in range(0,cantidadRayos):
             contX = random.randint(1, rangoRayos)
             contY = random.randint(1, rangoRayos)
-            enviarRayo(x, y, contX, contY, contX)
-            enviarRayo(x, y, -contX, contY, contX)
-            # for i in range(0,cantidadRayos//2):
-
+            enviarRayo(x, y, contX, contY, contX,1)
+            enviarRayo(x, y, contX, -contY, contX,1 )
+            # rayos secundarios
+            for i in range(0, cantidadRayosSecundarios ):
+                enviarRayo(x, y, contX, contY, contX, 2 )
+                enviarRayo(x, y, contX, -contY, contX, 2 )
     elif angulo == 90 or angulo == -270:
         for i in range(0, cantidadRayos):
             contX = random.randint(1, rangoRayos)
             contY = random.randint(1, rangoRayos)
-            enviarRayo(x, y, contX, contY, contY)
-            enviarRayo(x, y, contX, -contY, contY)
+            enviarRayo(x, y, contX, contY, contY,1 )
+            enviarRayo(x, y, contX, -contY, contY,1 )
+            # rayos secundarios
+            for i in range(0, cantidadRayosSecundarios):
+                enviarRayo(x, y, contX, contY, contY, 2 )
+                enviarRayo(x, y, contX, -contY, contY, 2 )
     elif angulo == -90 or angulo == 270:
         for i in range(0, cantidadRayos):
             contX = random.randint(1, rangoRayos)
             contY = random.randint(1, rangoRayos)
-            enviarRayo(x, y, -contX, contY, contY)
-            enviarRayo(x, y, -contX, -contY, contY)
+            enviarRayo(x, y, -contX, contY, contY,1)
+            enviarRayo(x, y, -contX, -contY, contY,1 )
+            # rayos secundarios
+            for i in range(0, cantidadRayosSecundarios):
+                enviarRayo(x, y, -contX, contY, contY, 2 )
+                enviarRayo(x, y, -contX, -contY, contY, 2 )
     elif angulo == 180 or angulo == -180:
         for i in range(0, cantidadRayos):
             contX = random.randint(1, rangoRayos)
             contY = random.randint(1, rangoRayos)
-            enviarRayo(x, y, contX, -contY, contX)
-            enviarRayo(x, y, -contX, -contY, contX)
+            enviarRayo(x, y, contX, -contY, contX,1 )
+            enviarRayo(x, y, -contX, -contY, contX,1 )
+            # rayos secundarios
+            for i in range(0, cantidadRayosSecundarios):
+                enviarRayo(x, y, contX, -contY, contX, 2 )
+                enviarRayo(x, y, -contX, -contY, contX, 2 )
 
 
 
-def enviarRayo(x,y,contx,conty,rango):
+
+def enviarRayo(x,y,contx,conty,rango,tipo):
     if x >= 500 or y >= 500 or x < 0 or y < 0:
         return True
     if rango > rangoRayos:
         return True
+    if tipo == 2 and rango > rangoRayosSecundario:
+        return True
     else:
         if not(np.array_equiv(imagenLogica[x,y],0)):
-            # imagen2[x][y] = 150
-            imagen2[x][y] = calcularEnergía(x,y)
-            # print("Pos pixel encontrado: ",x,y)
+            if tipo == 1:
+                if angulo == 0 or angulo == 90 or angulo == -270:
+                    if x > abs(xSonar - 950) or y > abs(ySonar - 100):
+                        return True
+                elif angulo == -90 or angulo == 270 or angulo == 180 or angulo == -180:
+                    if x < abs(xSonar - 950) or y < abs(ySonar - 100):
+                        return True
+                imagen2[x][y] = calcularEnergia(x,y)
+                if angulo == 0:
+                    calcularRayo(x, y, 180)
+                elif angulo == 90 or angulo == -270:
+                    calcularRayo(x, y, -90)
+                elif angulo == -90 or angulo == 270:
+                    calcularRayo(x, y, 90)
+                elif angulo == 180 or angulo == -180:
+                    calcularRayo(x, y, 0)
+            elif tipo == 2:
+                imagen2[x][y] = calcularEnergiaSecundario(x, y)
             return True
         else:
-            return enviarRayo(x-contx,y-conty,contx,conty,rango+1)
+            return enviarRayo(x-contx,y-conty,contx,conty,rango+1,tipo)
 
 
-def calcularEnergía(x2,y2):
+def calcularEnergiaSecundario(x,y):
+    x1 = abs(xSonar - 950)
+    y1 = abs(ySonar - 100)
+    energia = 255
+    distancia = math.sqrt((abs(x1 - x2)) ** 2 + (abs(y1 - y2)) ** 2)
+    energia =  energia - distancia
+    return energia//2
+
+
+def calcularEnergia(x2,y2):
     x1 = abs(xSonar-950)
     y1 = abs(ySonar-100)
     energia = 255
     distancia = math.sqrt((abs(x1-x2))**2+(abs(y1-y2))**2)
     energia =  energia - distancia
-    print("Energia:" , energia)
+    # print("Energia:" , energia)
     return energia
 
 
@@ -115,16 +156,14 @@ def modificarPixeles():
     for i in range(500):
         for j in range(500):
             imagen2[i, j] = 0
-            # if not(np.array_equiv(imagen2[i,j],0)):
-            #     imagen2[i,j] = 88
-            # if i < 100 and j < 100:
-            #     imagen2[i, j] = 152
+
 
 
 def rotarSonar(imagen,angulo,x,y):
     imagenRotada = pygame.transform.rotozoom(imagen,angulo,1)
     rectRotada = imagenRotada.get_rect(center = (x,y))
     return imagenRotada,rectRotada
+
 
 
 
@@ -184,6 +223,8 @@ angulo = 0
 
 modificarPixeles()
 
+
+
 while not done:
         clock.tick(30)
         for event in pygame.event.get():
@@ -200,6 +241,8 @@ while not done:
                     if event.key == pygame.K_SPACE:
                         # modificarPixeles()
                         calcularRayo(xSonar,ySonar,angulo)
+                    if event.key == pygame.K_r:
+                        modificarPixeles()
                 if event.type == pygame.KEYUP:
                     angulo = angulo
                 # print("Angulo: ", angulo)
