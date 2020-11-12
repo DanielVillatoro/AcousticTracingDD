@@ -21,86 +21,59 @@ rangoRayosSecundario = 5
 cantidadRayosSecundarios = 50
 
 
-
-
-
-def guardarAreaSonar(x,y):
-    rangoX, rangoY  = 30,30
-    x -= rangoX
-    y -= 15
-    if (x < rangoX):
-        x = 0
-    if (y < rangoX):
-        y = 0
-    area = []
-    while(rangoY != 0):
-        area += [(x,y)]
-        rangoX-=1
-        x+=1
-        if(rangoX == 0):
-            rangoX = 30
-            rangoY -= 1
-            y += 1
-        # imagen2[x,y] = 150
-    print("area sonar: ",area)
-
-def calcularXY(x,y):
+def calcularXY():
     x = abs(xSonar - 950)
     y = abs(ySonar - 100)
     return (x,y)
 
 
-
-
-def calcularRayo(x,y,angulo):
-    x,y = calcularXY(x,y)
+def calcularRayo(x,y,angulo,rebote):
+    x,y = calcularXY()
     contX = 0 #rango de recorrido x
     contY = 0 #rango de recorrido y
     if angulo == 0:
         for i in range(0,cantidadRayos):
             contX = random.randint(1, rangoRayos)
             contY = random.randint(1, rangoRayos)
-            enviarRayo(x, y, contX, contY, contX,1)
-            enviarRayo(x, y, contX, -contY, contX,1 )
+            enviarRayo(x, y, contX, contY, contX,1,rebote)
+            enviarRayo(x, y, -contX, contY, contX,1,rebote )
             # rayos secundarios
             for i in range(0, cantidadRayosSecundarios ):
-                enviarRayo(x, y, contX, contY, contX, 2 )
-                enviarRayo(x, y, contX, -contY, contX, 2 )
+                enviarRayo(x, y, contX, contY, contX, 2 ,rebote)
+                enviarRayo(x, y, -contX, contY, contX, 2,rebote )
     elif angulo == 90 or angulo == -270:
         for i in range(0, cantidadRayos):
             contX = random.randint(1, rangoRayos)
             contY = random.randint(1, rangoRayos)
-            enviarRayo(x, y, contX, contY, contY,1 )
-            enviarRayo(x, y, contX, -contY, contY,1 )
+            enviarRayo(x, y, contX, contY, contY,1,rebote )
+            enviarRayo(x, y, contX, -contY, contY,1,rebote )
             # rayos secundarios
             for i in range(0, cantidadRayosSecundarios):
-                enviarRayo(x, y, contX, contY, contY, 2 )
-                enviarRayo(x, y, contX, -contY, contY, 2 )
+                enviarRayo(x, y, contX, contY, contY, 2 ,rebote)
+                enviarRayo(x, y, contX, -contY, contY, 2 ,rebote)
     elif angulo == -90 or angulo == 270:
         for i in range(0, cantidadRayos):
             contX = random.randint(1, rangoRayos)
             contY = random.randint(1, rangoRayos)
-            enviarRayo(x, y, -contX, contY, contY,1)
-            enviarRayo(x, y, -contX, -contY, contY,1 )
+            enviarRayo(x, y, -contX, contY, contY,1,rebote)
+            enviarRayo(x, y, -contX, -contY, contY,1,rebote )
             # rayos secundarios
             for i in range(0, cantidadRayosSecundarios):
-                enviarRayo(x, y, -contX, contY, contY, 2 )
-                enviarRayo(x, y, -contX, -contY, contY, 2 )
+                enviarRayo(x, y, -contX, contY, contY, 2 ,rebote)
+                enviarRayo(x, y, -contX, -contY, contY, 2 ,rebote)
     elif angulo == 180 or angulo == -180:
         for i in range(0, cantidadRayos):
             contX = random.randint(1, rangoRayos)
             contY = random.randint(1, rangoRayos)
-            enviarRayo(x, y, contX, -contY, contX,1 )
-            enviarRayo(x, y, -contX, -contY, contX,1 )
+            enviarRayo(x, y, contX, -contY, contX,1 ,rebote)
+            enviarRayo(x, y, -contX, -contY, contX,1 ,rebote)
             # rayos secundarios
             for i in range(0, cantidadRayosSecundarios):
-                enviarRayo(x, y, contX, -contY, contX, 2 )
-                enviarRayo(x, y, -contX, -contY, contX, 2 )
+                enviarRayo(x, y, contX, -contY, contX, 2 ,rebote)
+                enviarRayo(x, y, -contX, -contY, contX, 2 ,rebote)
 
 
-
-
-def enviarRayo(x,y,contx,conty,rango,tipo):
+def enviarRayo(x,y,contx,conty,rango,tipo,rebote):
     if x >= 500 or y >= 500 or x < 0 or y < 0:
         return True
     if rango > rangoRayos:
@@ -110,27 +83,65 @@ def enviarRayo(x,y,contx,conty,rango,tipo):
     else:
         if not(np.array_equiv(imagenLogica[x,y],0)):
             if tipo == 1:
-                if angulo == 0 or angulo == 90 or angulo == -270:
-                    if x > abs(xSonar - 950) or y > abs(ySonar - 100):
-                        return True
-                elif angulo == -90 or angulo == 270 or angulo == 180 or angulo == -180:
-                    if x < abs(xSonar - 950) or y < abs(ySonar - 100):
-                        return True
-                imagen2[x][y] = calcularEnergia(x,y)
-                if angulo == 0:
-                    calcularRayo(x, y, 180)
-                elif angulo == 90 or angulo == -270:
-                    calcularRayo(x, y, -90)
-                elif angulo == -90 or angulo == 270:
-                    calcularRayo(x, y, 90)
-                elif angulo == 180 or angulo == -180:
-                    calcularRayo(x, y, 0)
+                if rebote:
+                    if angulo == 0:
+                        if x > abs(xSonar - 950) or y > abs(ySonar - 100):
+                            return True
+                        else:
+                            imagen2[x][y] = calcularEnergia(x, y)
+                            calcularRayo(x, y, 180,True)
+                    elif angulo == 90 or angulo == -270:
+                        if x > abs(xSonar - 950) or y > abs(ySonar - 100):
+                            return True
+                        else:
+                            imagen2[x][y] = calcularEnergia(x, y)
+                            calcularRayo(x, y, -90,True)
+                    elif angulo == -90 or angulo == 270:
+                        if x < abs(xSonar - 950) or y < abs(ySonar - 100):
+                            return True
+                        else:
+                            imagen2[x][y] = calcularEnergia(x, y)
+                            calcularRayo(x, y, 90,True)
+                    elif angulo == 180 or angulo == -180:
+                        if x < abs(xSonar - 950) or y < abs(ySonar - 100):
+                            return True
+                        else:
+                            imagen2[x][y] = calcularEnergia(x, y)
+                            calcularRayo(x, y, 0,True)
+                else:
+                    imagen2[x][y] = calcularEnergia(x, y)
             elif tipo == 2:
                 imagen2[x][y] = calcularEnergiaSecundario(x, y)
             return True
         else:
-            return enviarRayo(x-contx,y-conty,contx,conty,rango+1,tipo)
+            if verificarSiguientes(x,y,contx,conty):
+                return True
+            else:
+                return enviarRayo(x-contx,y-conty,contx,conty,rango+1,tipo,rebote)
 
+
+def verificarSiguientes(x,y,contx,contY):
+    cont1 = 1
+    cont2 = 1
+    cont3 = 0
+    if contx < 0:
+        cont1 = -1
+    if contY < 0:
+        cont2 = -1
+    contx = abs(contx)
+    contY = abs(contY)
+    while (cont3 < contx) :
+        x-cont1
+        if not (np.array_equiv(imagenLogica[x, y], 0)):
+            return True
+        cont3+=1
+    cont3 = 0
+    while (cont3 < contY):
+        y - cont2
+        if not (np.array_equiv(imagenLogica[x, y], 0)):
+            return True
+        cont3 += 1
+    return False
 
 def calcularEnergiaSecundario(x,y):
     x1 = abs(xSonar - 950)
@@ -220,13 +231,13 @@ height = 20
 
 
 angulo = 0
-
 modificarPixeles()
-
-
-
 while not done:
         clock.tick(30)
+
+        surface1 = pygame.surfarray.make_surface(imagen1)
+        surface2 = pygame.surfarray.make_surface(imagen2)
+
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     done = True
@@ -240,7 +251,8 @@ while not done:
                         angulo -= 90
                     if event.key == pygame.K_SPACE:
                         # modificarPixeles()
-                        calcularRayo(xSonar,ySonar,angulo)
+                        calcularRayo(xSonar,ySonar,angulo,False)
+                        # pygame.draw.aaline(screen, (255, 0, 0), calcularXY(), (10, 10), 1)
                     if event.key == pygame.K_r:
                         modificarPixeles()
                 if event.type == pygame.KEYUP:
@@ -256,16 +268,15 @@ while not done:
         imagen1
         imagen2
 
-        surface1 = pygame.surfarray.make_surface(imagen1)
+        # pygame.draw.aaline(screen, (255, 0, 0), calcularXY(), (10, 10), 1)
         screen.blit(surface1, (100, 100))
-
-        surface2 = pygame.surfarray.make_surface(imagen2)
         screen.blit(surface2, (950, 100))
+
 
         #rotacion del sonar
         sonarRotado,rotadoRect = rotarSonar(sonar,angulo,xSonar,ySonar)
         screen.blit(sonarRotado,rotadoRect)
-        pygame.display.flip()
+        # pygame.display.flip()
         pygame.display.update()
 
 
