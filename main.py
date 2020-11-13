@@ -7,13 +7,18 @@ from numpy import random
 import numpy as np
 import pygame
 import math
+import  random
 import threading
+from datetime import datetime
+
 
 #Imagenes del emulador
 imagen1 = np.array(Image.open('imagen.jpg'))
 imagen2 = np.array(Image.open('imagen.jpg'))
 imagenLogica = np.array(Image.open('imagen.jpg'))
 
+
+random.seed(datetime.now())
 rangoRayos = 15
 cantidadRayos = 600
 
@@ -33,12 +38,14 @@ def calcularRayo(x,y,angulo,rebote):
     contY = 0 #rango de recorrido y
     if angulo == 0:
         for i in range(0,cantidadRayos):
-            contX = random.randint(1, rangoRayos//2)
-            contY = random.randint(1, rangoRayos//2)
+            contX = random.randint(0, rangoRayos)
+            contY = random.randint(0, rangoRayos)
             enviarRayo(x, y, contX, contY, contX,1,rebote)
             enviarRayo(x, y, -contX, contY, contX,1,rebote )
             # rayos secundarios
             for i in range(0, cantidadRayosSecundarios ):
+                contX = random.randint(0, rangoRayos)
+                contY = random.randint(0, rangoRayos)
                 enviarRayo(x, y, contX, contY, contX, 2 ,rebote)
                 enviarRayo(x, y, -contX, contY, contX, 2,rebote )
     elif angulo == 90 or angulo == -270:
@@ -260,6 +267,8 @@ while not done:
                     if event.key == pygame.K_SPACE:
                         # modificarPixeles()
                         calcularRayo(xSonar,ySonar,angulo,False)
+                        contY = random.randint(1, rangoRayos)
+                        print(contY)
                         # pygame.draw.aaline(screen, (255, 0, 0), calcularXY(), (10, 10), 1)
                     if event.key == pygame.K_r:
                         modificarPixeles()
@@ -270,6 +279,8 @@ while not done:
 
         if angulo == -360 or angulo == 360:
             angulo = 0
+
+        calcularRayo(xSonar, ySonar, angulo, False)
         screen.fill((150, 150, 150))
         screen.blit(texto1,textRect1)
         screen.blit(texto2,textRect2)
