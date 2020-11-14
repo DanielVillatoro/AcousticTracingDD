@@ -111,14 +111,21 @@ def enviarRayo(x,y,contx,conty,rango,tipo,rebote):
             j = abs(conty)
             if angulo == 0:
                 print("rebote")
-                # rayosRebote(x-15,y-15,i,j,rango,tipo)
                 #90, -90
                 rayosRebote(x,y,x+15, y-15, -i, j, rango, tipo)
                 rayosRebote(x,y,x+15, y+15, -i, -j, rango, tipo)
-                # rayosRebote(x-15, y+15, i, -j, rango, tipo)
-            # elif angulo == 90 or angulo == -270:
-            # elif angulo == -90 or angulo == 270:
-            # elif angulo == 180 or angulo == -180:
+            elif angulo == 90 or angulo == -270:
+                # 180 , 0
+                rayosRebote(x, y, x + 15, y - 15, i, -j, rango, tipo)
+                rayosRebote(x, y, x + 15, y + 15, -i, -j, rango, tipo)
+            elif angulo == -90 or angulo == 270:
+                # 180 , 0
+                rayosRebote(x, y, x + 15, y - 15, i, -j, rango, tipo)
+                rayosRebote(x, y, x + 15, y + 15, -i, -j, rango, tipo)
+            elif angulo == 180 or angulo == -180:
+                # 90, -90
+                rayosRebote(x, y, x + 15, y - 15, -i, j, rango, tipo)
+                rayosRebote(x, y, x + 15, y + 15, -i, -j, rango, tipo)
             return True
         else:
             return enviarRayo(x-contx,y-conty,contx,conty,rango+1,tipo,rebote)
@@ -135,8 +142,30 @@ def rayosRebote(x1,y1,x,y,contx,conty,rango,tipo):
         if not (np.array_equiv(imagenLogica[x, y], 0)):
             if tipo == 1:
                 distancia = math.sqrt((abs(x1 - x)) ** 2 + (abs(y1 - y)) ** 2)
-                yPos = abs(math.trunc(distancia-170))
-                imagen2[x1][yPos] = calcularEnergia(x1, y1)
+                if angulo == 0:
+                    try:
+                        yPos = abs(math.trunc(distancia)-y1)
+                        imagen2[x1][yPos] = calcularEnergia(x1, y1)
+                    except:
+                        print("Out of range")
+                elif angulo == 90 or angulo == -270:
+                    try:
+                        xPos = abs(math.trunc(distancia) - x1)
+                        imagen2[xPos][y1] = calcularEnergia(x1, y1)
+                    except:
+                        print("Out of range")
+                elif angulo == -90 or angulo == 270:
+                    try:
+                        xPos = abs(math.trunc(distancia) + x1)
+                        imagen2[xPos][y1] = calcularEnergia(x1, y1)
+                    except:
+                        print("Out of range")
+                elif angulo == 180 or angulo == -180:
+                    try:
+                        yPos = abs(math.trunc(distancia) + y1)
+                        imagen2[x1][yPos] = calcularEnergia(x1, y1)
+                    except:
+                        print("Out of range")
             elif tipo == 2:
                 imagen2[x + 10][y] = calcularEnergiaSecundario(x, y)
                 imagen2[x - 10][y] = calcularEnergiaSecundario(x, y)
