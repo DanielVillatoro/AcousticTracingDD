@@ -20,9 +20,11 @@ imagenLogica = np.array(Image.open('imagen.jpg'))
 
 random.seed(datetime.now())
 rangoRayos = 15
+recorridoPrimarios = 50
 cantidadRayos = 600
 
 rangoRayosSecundario = 5
+recorridoSecundarios = 30
 cantidadRayosSecundarios = 50
 
 
@@ -38,46 +40,54 @@ def calcularRayo(x,y,angulo,rebote):
     contY = 0 #rango de recorrido y
     if angulo == 0:
         for i in range(0,cantidadRayos):
-            contX = random.randint(0, rangoRayos)
-            contY = random.randint(0, rangoRayos)
+            contX = random.randint(0, recorridoPrimarios)
+            contY = random.randint(0, recorridoPrimarios)
             enviarRayo(x, y, contX, contY, contX,1,rebote)
             enviarRayo(x, y, -contX, contY, contX,1,rebote )
             # rayos secundarios
             for i in range(0, cantidadRayosSecundarios ):
-                contX = random.randint(0, rangoRayos)
-                contY = random.randint(0, rangoRayos)
+                contX = random.randint(0, recorridoSecundarios)
+                contY = random.randint(0, recorridoSecundarios)
                 enviarRayo(x, y, contX, contY, contX, 2 ,rebote)
                 enviarRayo(x, y, -contX, contY, contX, 2,rebote )
     elif angulo == 90 or angulo == -270:
         for i in range(0, cantidadRayos):
-            contX = random.randint(1, rangoRayos)
-            contY = random.randint(1, rangoRayos)
+            contX = random.randint(1, recorridoPrimarios)
+            contY = random.randint(1, recorridoPrimarios)
             enviarRayo(x, y, contX, contY, contY,1,rebote )
             enviarRayo(x, y, contX, -contY, contY,1,rebote )
             # rayos secundarios
             for i in range(0, cantidadRayosSecundarios):
+                contX = random.randint(0, recorridoSecundarios)
+                contY = random.randint(0, recorridoSecundarios)
                 enviarRayo(x, y, contX, contY, contY, 2 ,rebote)
                 enviarRayo(x, y, contX, -contY, contY, 2 ,rebote)
     elif angulo == -90 or angulo == 270:
         for i in range(0, cantidadRayos):
-            contX = random.randint(1, rangoRayos)
-            contY = random.randint(1, rangoRayos)
+            contX = random.randint(1, recorridoPrimarios)
+            contY = random.randint(1, recorridoPrimarios)
             enviarRayo(x, y, -contX, contY, contY,1,rebote)
             enviarRayo(x, y, -contX, -contY, contY,1,rebote )
             # rayos secundarios
             for i in range(0, cantidadRayosSecundarios):
+                contX = random.randint(0, recorridoSecundarios)
+                contY = random.randint(0, recorridoSecundarios)
                 enviarRayo(x, y, -contX, contY, contY, 2 ,rebote)
                 enviarRayo(x, y, -contX, -contY, contY, 2 ,rebote)
     elif angulo == 180 or angulo == -180:
         for i in range(0, cantidadRayos):
-            contX = random.randint(1, rangoRayos)
-            contY = random.randint(1, rangoRayos)
+            contX = random.randint(1, recorridoPrimarios)
+            contY = random.randint(1, recorridoPrimarios)
             enviarRayo(x, y, contX, -contY, contX,1 ,rebote)
             enviarRayo(x, y, -contX, -contY, contX,1 ,rebote)
             # rayos secundarios
             for i in range(0, cantidadRayosSecundarios):
+                contX = random.randint(0, recorridoSecundarios)
+                contY = random.randint(0, recorridoSecundarios)
                 enviarRayo(x, y, contX, -contY, contX, 2 ,rebote)
                 enviarRayo(x, y, -contX, -contY, contX, 2 ,rebote)
+
+
 
 
 def enviarRayo(x,y,contx,conty,rango,tipo,rebote):
@@ -90,73 +100,51 @@ def enviarRayo(x,y,contx,conty,rango,tipo,rebote):
     else:
         if not(np.array_equiv(imagenLogica[x,y],0)):
             if tipo == 1:
-                if rebote:
-                    if angulo == 0:
-                        if x > abs(xSonar - 950) or y > abs(ySonar - 100):
-                            return True
-                        else:
-                            imagen2[x][y] = calcularEnergia(x, y)
-                            calcularRayo(x, y, 180,True)
-                            calcularRayo(x, y, -90, True)
-                            calcularRayo(x, y, 90, True)
-                    elif angulo == 90 or angulo == -270:
-                        if x > abs(xSonar - 950) or y > abs(ySonar - 100):
-                            return True
-                        else:
-                            imagen2[x][y] = calcularEnergia(x, y)
-                            calcularRayo(x, y, -90,True)
-                            calcularRayo(x, y, 0, True)
-                            calcularRayo(x, y, 180, True)
-                    elif angulo == -90 or angulo == 270:
-                        if x < abs(xSonar - 950) or y < abs(ySonar - 100):
-                            return True
-                        else:
-                            imagen2[x][y] = calcularEnergia(x, y)
-                            calcularRayo(x, y, 90,True)
-                            calcularRayo(x, y, 0, True)
-                            calcularRayo(x, y, 180, True)
-                    elif angulo == 180 or angulo == -180:
-                        if x < abs(xSonar - 950) or y < abs(ySonar - 100):
-                            return True
-                        else:
-                            imagen2[x][y] = calcularEnergia(x, y)
-                            calcularRayo(x, y, 0,True)
-                            calcularRayo(x, y, 90, True)
-                            calcularRayo(x, y, -90, True)
-                else:
-                    imagen2[x][y] = calcularEnergia(x, y)
+                # pass
+                imagen2[x][y] = calcularEnergia(x, y)
             elif tipo == 2:
-                imagen2[x][y] = calcularEnergiaSecundario(x, y)
+                imagen2[x+10][y] = calcularEnergiaSecundario(x, y)
+                imagen2[x - 10][y] = calcularEnergiaSecundario(x, y)
+                imagen2[x][y +  6] = calcularEnergiaSecundario(x, y)
+                imagen2[x][y - 6] = calcularEnergiaSecundario(x, y)
+            i = abs(contx)
+            j = abs(conty)
+            if angulo == 0:
+                print("rebote")
+                # rayosRebote(x-15,y-15,i,j,rango,tipo)
+                #90, -90
+                rayosRebote(x,y,x+15, y-15, -i, j, rango, tipo)
+                rayosRebote(x,y,x+15, y+15, -i, -j, rango, tipo)
+                # rayosRebote(x-15, y+15, i, -j, rango, tipo)
+            # elif angulo == 90 or angulo == -270:
+            # elif angulo == -90 or angulo == 270:
+            # elif angulo == 180 or angulo == -180:
             return True
         else:
-            # if verificarSiguientes(x,y,contx,conty):
-            #     return True
-            # else:
-                return enviarRayo(x-contx,y-conty,contx,conty,rango+1,tipo,rebote)
+            return enviarRayo(x-contx,y-conty,contx,conty,rango+1,tipo,rebote)
 
 
-def verificarSiguientes(x,y,contx,contY):
-    cont1 = 1
-    cont2 = 1
-    cont3 = 0
-    if contx < 0:
-        cont1 = -1
-    if contY < 0:
-        cont2 = -1
-    contx = abs(contx)
-    contY = abs(contY)
-    while (cont3 <= contx) :
-        x-=cont1
+def rayosRebote(x1,y1,x,y,contx,conty,rango,tipo):
+    if x >= 500 or y >= 500 or x < 0 or y < 0:
+        return True
+    if rango > rangoRayos:
+        return True
+    if tipo == 2 and rango > rangoRayosSecundario:
+        return True
+    else:
         if not (np.array_equiv(imagenLogica[x, y], 0)):
+            if tipo == 1:
+                distancia = math.sqrt((abs(x1 - x)) ** 2 + (abs(y1 - y)) ** 2)
+                yPos = abs(math.trunc(distancia-170))
+                imagen2[x1][yPos] = calcularEnergia(x1, y1)
+            elif tipo == 2:
+                imagen2[x + 10][y] = calcularEnergiaSecundario(x, y)
+                imagen2[x - 10][y] = calcularEnergiaSecundario(x, y)
+                imagen2[x][y + 6] = calcularEnergiaSecundario(x, y)
+                imagen2[x][y - 6] = calcularEnergiaSecundario(x, y)
             return True
-        cont3+=1
-    cont3 = 0
-    while (cont3 <= contY):
-        y -= cont2
-        if not (np.array_equiv(imagenLogica[x, y], 0)):
-            return True
-        cont3 += 1
-    return False
+        else:
+            return rayosRebote(x1,y1,x - contx, y - conty, contx, conty, rango + 1, tipo)
 
 def calcularEnergiaSecundario(x,y):
     x1 = abs(xSonar - 950)
@@ -246,6 +234,7 @@ height = 20
 
 
 angulo = 0
+flag = False
 modificarPixeles()
 while not done:
         clock.tick(30)
@@ -265,10 +254,11 @@ while not done:
                     if event.key == pygame.K_RIGHT:
                         angulo -= 90
                     if event.key == pygame.K_SPACE:
+                        flag = not flag
                         # modificarPixeles()
-                        calcularRayo(xSonar,ySonar,angulo,False)
-                        contY = random.randint(1, rangoRayos)
-                        print(contY)
+                        # calcularRayo(xSonar,ySonar,angulo,False)
+                        # contY = random.randint(1, rangoRayos)
+                        # print(contY)
                         # pygame.draw.aaline(screen, (255, 0, 0), calcularXY(), (10, 10), 1)
                     if event.key == pygame.K_r:
                         modificarPixeles()
@@ -280,7 +270,8 @@ while not done:
         if angulo == -360 or angulo == 360:
             angulo = 0
 
-        calcularRayo(xSonar, ySonar, angulo, False)
+        if flag:
+            calcularRayo(xSonar, ySonar, angulo, False)
         screen.fill((150, 150, 150))
         screen.blit(texto1,textRect1)
         screen.blit(texto2,textRect2)
