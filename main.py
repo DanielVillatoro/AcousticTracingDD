@@ -28,12 +28,14 @@ recorridoSecundarios = 30
 cantidadRayosSecundarios = 50
 
 
+#Calcula la posicion del sonar dentro de la imagen
 def calcularXY():
     x = abs(xSonar - 950)
     y = abs(ySonar - 100)
     return (x,y)
 
 
+#Filtra el angulo en el que se encuentra el sonar para enviar los rayos acusticos
 def calcularRayo(x,y,angulo,rebote):
     x,y = calcularXY()
     contX = 0 #rango de recorrido x
@@ -90,6 +92,7 @@ def calcularRayo(x,y,angulo,rebote):
 
 
 
+#Funcion encargada de realizar el recorrido del rayo
 def enviarRayo(x,y,contx,conty,rango,tipo,rebote):
     if x >= 500 or y >= 500 or x < 0 or y < 0:
         return True
@@ -131,6 +134,7 @@ def enviarRayo(x,y,contx,conty,rango,tipo,rebote):
             return enviarRayo(x-contx,y-conty,contx,conty,rango+1,tipo,rebote)
 
 
+#Funcion encargada de calcular la distancias de los rebotes y pintar los pixeles detras de los elementos
 def rayosRebote(x1,y1,x,y,contx,conty,rango,tipo):
     if x >= 500 or y >= 500 or x < 0 or y < 0:
         return True
@@ -175,6 +179,8 @@ def rayosRebote(x1,y1,x,y,contx,conty,rango,tipo):
         else:
             return rayosRebote(x1,y1,x - contx, y - conty, contx, conty, rango + 1, tipo)
 
+
+#Funcion encargada de calcular la energia de los rayos secundarios
 def calcularEnergiaSecundario(x,y):
     x1 = abs(xSonar - 950)
     y1 = abs(ySonar - 100)
@@ -184,6 +190,7 @@ def calcularEnergiaSecundario(x,y):
     return energia//2
 
 
+#Funcion encargada de calcular la energia de los rayos primarios
 def calcularEnergia(x2,y2):
     x1 = abs(xSonar-950)
     y1 = abs(ySonar-100)
@@ -195,6 +202,7 @@ def calcularEnergia(x2,y2):
 
 
 
+#Funcion encargada de modificar la imagen sobre la cual se esta trabajando con el sonar
 def modificarPixeles():
     for i in range(500):
         for j in range(500):
@@ -202,13 +210,11 @@ def modificarPixeles():
 
 
 
+#Funcion encargada de la rotacion del sonar
 def rotarSonar(imagen,angulo,x,y):
     imagenRotada = pygame.transform.rotozoom(imagen,angulo,1)
     rectRotada = imagenRotada.get_rect(center = (x,y))
     return imagenRotada,rectRotada
-
-
-
 
 
 # --------------------------------------- GUI ------------------------------------------------U
@@ -237,8 +243,6 @@ textRect2 = texto2.get_rect()
 # set the center of the rectangular object.
 textRect1.center = (350 , 50)
 textRect2.center = (1200 , 50)
-
-
 
 sonar = pygame.transform.scale(pygame.image.load("sonar.png"),(75,40))
 centro = sonar.get_rect()
