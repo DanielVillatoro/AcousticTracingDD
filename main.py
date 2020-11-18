@@ -8,7 +8,7 @@ import numpy as np
 import pygame
 import math
 import  random
-import threading
+import time
 from datetime import datetime
 
 
@@ -21,11 +21,11 @@ imagenLogica = np.array(Image.open('imagen.jpg'))
 random.seed(datetime.now())
 rangoRayos = 15
 recorridoPrimarios = 50
-cantidadRayos = 600
+cantidadRayos = 150
 
 rangoRayosSecundario = 5
 recorridoSecundarios = 30
-cantidadRayosSecundarios = 50
+cantidadRayosSecundarios = 15
 
 
 #Calcula la posicion del sonar dentro de la imagen
@@ -113,7 +113,6 @@ def enviarRayo(x,y,contx,conty,rango,tipo,rebote):
             i = abs(contx)
             j = abs(conty)
             if angulo == 0:
-                print("rebote")
                 #90, -90
                 rayosRebote(x,y,x+15, y-15, -i, j, rango, tipo)
                 rayosRebote(x,y,x+15, y+15, -i, -j, rango, tipo)
@@ -144,37 +143,43 @@ def rayosRebote(x1,y1,x,y,contx,conty,rango,tipo):
         return True
     else:
         if not (np.array_equiv(imagenLogica[x, y], 0)):
-            if tipo == 1:
-                distancia = math.sqrt((abs(x1 - x)) ** 2 + (abs(y1 - y)) ** 2)
-                if angulo == 0:
-                    try:
-                        yPos = abs(math.trunc(distancia)-y1)
+            distancia = math.sqrt((abs(x1 - x)) ** 2 + (abs(y1 - y)) ** 2)
+            if angulo == 0:
+                try:
+                    yPos = abs(math.trunc(distancia)-y1)
+                    if tipo == 1:
                         imagen2[x1][yPos] = calcularEnergia(x1, y1)
-                    except:
-                        print("Out of range")
-                elif angulo == 90 or angulo == -270:
-                    try:
-                        xPos = abs(math.trunc(distancia) - x1)
+                    else:
+                        imagen2[x1][yPos] = calcularEnergiaSecundario(x1, y1)
+                except:
+                    print("Out of range")
+            elif angulo == 90 or angulo == -270:
+                try:
+                    xPos = abs(math.trunc(distancia) - x1)
+                    if tipo == 1:
                         imagen2[xPos][y1] = calcularEnergia(x1, y1)
-                    except:
-                        print("Out of range")
-                elif angulo == -90 or angulo == 270:
-                    try:
-                        xPos = abs(math.trunc(distancia) + x1)
+                    else:
+                        imagen2[xPos][y1] = calcularEnergiaSecundario(x1, y1)
+                except:
+                    print("Out of range")
+            elif angulo == -90 or angulo == 270:
+                try:
+                    xPos = abs(math.trunc(distancia) + x1)
+                    if tipo == 1:
                         imagen2[xPos][y1] = calcularEnergia(x1, y1)
-                    except:
-                        print("Out of range")
-                elif angulo == 180 or angulo == -180:
-                    try:
-                        yPos = abs(math.trunc(distancia) + y1)
+                    else:
+                        imagen2[xPos][y1] = calcularEnergiaSecundario(x1, y1)
+                except:
+                    print("Out of range")
+            elif angulo == 180 or angulo == -180:
+                try:
+                    yPos = abs(math.trunc(distancia) + y1)
+                    if tipo == 1:
                         imagen2[x1][yPos] = calcularEnergia(x1, y1)
-                    except:
-                        print("Out of range")
-            elif tipo == 2:
-                imagen2[x + 10][y] = calcularEnergiaSecundario(x, y)
-                imagen2[x - 10][y] = calcularEnergiaSecundario(x, y)
-                imagen2[x][y + 6] = calcularEnergiaSecundario(x, y)
-                imagen2[x][y - 6] = calcularEnergiaSecundario(x, y)
+                    else:
+                        imagen2[x1][yPos] = calcularEnergiaSecundario(x1, y1)
+                except:
+                    print("Out of range")
             return True
         else:
             return rayosRebote(x1,y1,x - contx, y - conty, contx, conty, rango + 1, tipo)
@@ -304,7 +309,10 @@ while not done:
             angulo = 0
 
         if flag:
+            inicio = datetime.now()
             calcularRayo(xSonar, ySonar, angulo, False)
+            fin = datetime.now()
+            # print(fin-inicio)
         screen.fill((150, 150, 150))
         screen.blit(texto1,textRect1)
         screen.blit(texto2,textRect2)
